@@ -23,6 +23,8 @@ import javax.swing.WindowConstants;
 public class PageTab extends JFrame implements ActionListener, MouseMotionListener, MouseListener,
     KeyListener {
 
+        
+        // add line
   private final JPanel jPanel;
 
   private final JButton jButton1;
