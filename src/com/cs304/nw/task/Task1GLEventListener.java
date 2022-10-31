@@ -26,19 +26,37 @@ public class Task1GLEventListener implements GLEventListener {
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
-        int r = 100;
-        int ribs = 4;
-        drawRegularRibs(gl, r, new Color(28, 149, 178), ribs);
+        drawRegularRibs(gl,
+                50,
+                new Color(28, 149, 178),
+                6,
+                150);
+        drawRegularRibs(gl,
+                60,
+                new Color(120, 232, 255),
+                8,
+                -150);
+        drawRegularRibs(gl,
+                70,
+                new Color(16, 86, 103),
+                360,
+                0);
+
 
     }
 
-    private void drawRegularRibs(GL gl, int r, Color color, int ribs) {
+    private void drawRegularRibs(
+            GL gl,
+            int r,
+            Color color,
+            int ribs,
+            int x) {
         gl.glColor3fv(color.getColorComponents(null), 0);
         gl.glBegin(GL.GL_POLYGON);
 
         int step = 360 / ribs;
         for (int i = 0; i < 360; i += step)
-            gl.glVertex2d(r * cos(toRadians(i)), r * sin(toRadians(i)));
+            gl.glVertex2d(x+r * cos(toRadians(i)), r * sin(toRadians(i)));
 
         gl.glEnd();
     }
