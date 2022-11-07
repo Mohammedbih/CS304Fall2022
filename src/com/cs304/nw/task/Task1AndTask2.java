@@ -12,7 +12,7 @@ public class Task1AndTask2 extends JFrame {
     static FPSAnimator animator;
 
     public Task1AndTask2() {
-        super("Task 1");
+        super("Task 1&2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         glcanvas = new GLCanvas();
