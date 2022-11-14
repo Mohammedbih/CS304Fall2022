@@ -4,6 +4,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import java.awt.*;
+import java.util.Random;
 
 import static java.lang.Math.*;
 
@@ -11,11 +12,20 @@ public class SimpleFaceGLListener implements GLEventListener {
     private int angelA;
     private int angelB;
 
+    private double xp, yp;
+    private boolean xIncrease = true, yIncrease = true;
+
+    private double theta = 30;
+    private Random random = new Random();
+
+    private final static int BOUND = 500;
+
+
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
 
-        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        gl.glClearColor(255f, 255f, 255f, 1.0f);
 
         gl.glMatrixMode(GL.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -30,31 +40,65 @@ public class SimpleFaceGLListener implements GLEventListener {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
 
-        drawCircle(gl, 400, new Color(255, 255, 2), 0, 0);
+        int x = 0, y = 0, r = 150;
 
-        int xx=230,yy=200;
+        gl.glPushMatrix();
+        gl.glTranslated(xp, yp, 1);
+        drawFace(gl, x, y, r);
+        gl.glPopMatrix();
+
+        //logic
+        if (isXTouched(xp, r)) xIncrease = !xIncrease;
+
+        if (isYTouched(yp, r)) yIncrease = !yIncrease;
+
+        if (isXTouched(xp, r) || isYTouched(yp, r)) theta = random.nextInt(180);
+
+        double cs = cos(toRadians(theta));
+        double si = sin(toRadians(theta));
+
+        if (xIncrease) xp += cs; else xp -= cs;
+
+        if (yIncrease) yp += si; else yp -= si;
+
+    }
+
+    private boolean isXTouched(double x, int r) {
+        return (x + r >= BOUND || x - r <= -BOUND);
+    }
+
+    private boolean isYTouched(double y, int r) {
+        return (y + r >= BOUND || y - r <= -BOUND);
+    }
+
+
+    void drawFace(GL gl, int x, int y, int r) {
+        drawCircle(gl, r, new Color(255, 255, 2), x, y);
+
+        int xx = r / 2, yy = r / 2;
         {
             gl.glPushMatrix();
-            gl.glTranslated(xx,yy,0);
-            gl.glRotated(angelA++,0,0,1);
-            gl.glTranslated(-xx,-yy,0);
-            drawFreeStar(gl, 250, Color.red, xx, yy, 10);
+            gl.glTranslated(xx, yy, 0);
+            gl.glRotated(angelA++, 0, 0, 1);
+            gl.glTranslated(-xx, -yy, 0);
+            drawCircle(gl, r / 4, new Color(255, 255, 255), xx, yy);
+            drawCircle(gl, r / 9, new Color(0, 0, 0), xx + r / 10, yy);
             gl.glPopMatrix();
 
             gl.glPushMatrix();
-            gl.glTranslated(-xx,yy,0);
-            gl.glRotated(angelB--,0,0,1);
-            gl.glTranslated(xx,-yy,0);
-            drawFreeStar(gl, 250, Color.red, -xx, yy, 10);
+            gl.glTranslated(-xx, yy, 0);
+            gl.glRotated(angelB--, 0, 0, 1);
+            gl.glTranslated(xx, -yy, 0);
+            drawCircle(gl, r / 4, new Color(255, 255, 255), -xx, yy);
+            drawCircle(gl, r / 9, new Color(0, 0, 0), -xx - r / 10, yy);
             gl.glPopMatrix();
         }
 
 
         gl.glPushMatrix();
         gl.glRotated(180, 1, 0, 0);
-        drawHalfCircle(gl, 250, new Color(2, 2, 1), 0, 110);
+        drawHalfCircle(gl, r / 2, new Color(2, 2, 1), x, y + (r / 3));
         gl.glPopMatrix();
-
     }
 
     void drawFreeStar(GL gl, int r, Color c, int x, int y, int ang) {

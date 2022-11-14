@@ -30,14 +30,6 @@ public class Task1AndTask2GLEventListener implements GLEventListener {
 
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
-
-//        drawRegularRibs(gl,
-//                100,
-//                new Color(111, 28, 178),
-//                8,
-//                -550+110);
-
-
         gl.glPushMatrix();
         gl.glScalef(factor,factor,1);
         if (factor > 1.5 || factor < .75){
@@ -84,8 +76,6 @@ public class Task1AndTask2GLEventListener implements GLEventListener {
                 366-90,
                 0,
                 angel);
-
-//        gl.glPopMatrix();
 
 
     }

@@ -17,7 +17,7 @@ public class SimpleFace extends JFrame {
 
         glcanvas = new GLCanvas();
         glcanvas.addGLEventListener(listener);
-        animator = new FPSAnimator(glcanvas,60);
+        animator = new FPSAnimator(glcanvas,90);
 
         add(glcanvas, BorderLayout.CENTER);
         setSize(1000, 1000);
