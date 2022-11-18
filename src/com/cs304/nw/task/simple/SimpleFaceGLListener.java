@@ -95,10 +95,8 @@ public class SimpleFaceGLListener implements GLEventListener {
         }
 
 
-        gl.glPushMatrix();
-        gl.glRotated(180, 1, 0, 0);
-        drawHalfCircle(gl, r / 2, new Color(2, 2, 1), x, y + (r / 3));
-        gl.glPopMatrix();
+
+        drawCircle(gl, r / 3, new Color(2, 2, 1), x, y - (r / 3));
     }
 
     void drawFreeStar(GL gl, int r, Color c, int x, int y, int ang) {
