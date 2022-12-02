@@ -27,7 +27,6 @@ public class TaskIListener implements GLEventListener, KeyListener {
     private int y;
     private Dir dir = Dir.IDEAL;
     private int distance;
-    private final int R = 200;
 
 
     @Override
@@ -52,85 +51,80 @@ public class TaskIListener implements GLEventListener, KeyListener {
         drawRegularRibs(gl, 50, new Color(255, 255, 1), 360, x, y);
 
         ////////logic////////////
+        int r = 200;
         switch (dir) {
             case IDEAL -> {
-                x = 0;
-                y = 0;
-                distance = 0;
+                x = 0; y = 0; distance = 0;
             }
             case UP -> {
-                if (distance <= R) y++;
-                else y--;
+                if (distance <= r) y++; else y--;
 
-                if (distance == 2 * R) dir = Dir.IDEAL;
+                if (distance >= 2 * r) dir = Dir.IDEAL;
                 distance++;
             }
             case DOWN -> {
-                if (distance <= R) y--;
-                else y++;
+                if (distance <= r) y--; else y++;
 
-                if (distance == 2 * R) dir = Dir.IDEAL;
+                if (distance >= 2 * r) dir = Dir.IDEAL;
                 distance++;
             }
             case RIGHT -> {
-                if (distance <= R) x++;
-                else x--;
+                if (distance <= r) x++; else x--;
 
-                if (distance == 2 * R) dir = Dir.IDEAL;
+                if (distance >= 2 * r) dir = Dir.IDEAL;
                 distance++;
             }
             case LEFT -> {
-                if (distance <= R) x--;
-                else x++;
+                if (distance <= r) x--; else x++;
 
-                if (distance == 2 * R) dir = Dir.IDEAL;
+                if (distance >= 2 * r) dir = Dir.IDEAL;
                 distance++;
             }
-            case UP_RIGHT -> {
-                if (distance <= R){
-                    x++; y++;
-                }
-                else{
-                    x--; y--;
-                }
-
-                if (distance == 2 * R) dir = Dir.IDEAL;
-                distance++;
-            }
-            case UP_LEFT -> {
-                if (distance <= R){
-                    x--; y++;
-                }
-                else{
-                    x++; y--;
-                }
-
-                if (distance == 2 * R) dir = Dir.IDEAL;
-                distance++;
-            }
-            case DOWN_RIGHT -> {
-                if (distance <= R){
-                    x++; y--;
-                }
-                else{
-                    x--; y++;
-                }
-
-                if (distance == 2 * R) dir = Dir.IDEAL;
-                distance++;
-
-            }
-            case DOWN_LEFT -> {
-                if (distance <= R){
-                    x--; y--;
-                }
-                else{
-                    x++; y++;
-                }
-
-                if (distance == 2 * R) dir = Dir.IDEAL;
-                distance++;
-            }
+//            case UP_RIGHT -> {
+//                if (distance <= r){
+//                    x++; y++;
+//                }
+//                else{
+//                    x--; y--;
+//                }
+//
+//                if (distance >= 2 * r) dir = Dir.IDEAL;
+//                distance++;
+//            }
+//            case UP_LEFT -> {
+//                if (distance <= r){
+//                    x--; y++;
+//                }
+//                else{
+//                    x++; y--;
+//                }
+//
+//                if (distance >= 2 * r) dir = Dir.IDEAL;
+//                distance++;
+//            }
+//            case DOWN_RIGHT -> {
+//                if (distance <= r){
+//                    x++; y--;
+//                }
+//                else{
+//                    x--; y++;
+//                }
+//
+//                if (distance >= 2 * r) dir = Dir.IDEAL;
+//                distance++;
+//
+//            }
+//            case DOWN_LEFT -> {
+//                if (distance <= r){
+//                    x--; y--;
+//                }
+//                else{
+//                    x++; y++;
+//                }
+//
+//                if (distance >= 2 * r) dir = Dir.IDEAL;
+//                distance++;
+//            }
 
         }
 
@@ -158,34 +152,6 @@ public class TaskIListener implements GLEventListener, KeyListener {
         gl.glEnd();
     }
 
-    void drawFreeStar(GL gl, int r, int r2, Color c, int x, int y, int rotateFactor) {
-        gl.glColor3fv(c.getColorComponents(null), 0);
-        gl.glBegin(GL.GL_LINE_LOOP);
-
-        for (int i = 0; i < 360; i += 60) {
-            double f = cos(toRadians(i + rotateFactor));
-            double s = sin(toRadians(i + rotateFactor));
-            gl.glVertex2d(r2 * f + x,
-                    r2 * s + y);
-            gl.glVertex2d(r * f + x,
-                    r * s + y);
-        }
-
-        gl.glEnd();
-    }
-
-    private void drawStar(GL gl, int r, Color color, int x) {
-        gl.glColor3fv(color.getColorComponents(null), 0);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        final int ROTATE_FACTOR = abs(72 - 90);
-
-        for (int i = 0; i < 360 * 2; i += 72 * 2) // 0 *72 144 *216 288 *360
-            gl.glVertex2d(x + r * cos(toRadians(i + ROTATE_FACTOR)),
-                    r * sin(toRadians(i + ROTATE_FACTOR)));
-
-        gl.glEnd();
-    }
-
     @Override
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
 
@@ -199,20 +165,28 @@ public class TaskIListener implements GLEventListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        if(distance>=1) return;
         switch (e.getKeyCode()) {
             case VK_UP -> dir = Dir.UP;
             case VK_DOWN -> dir = Dir.DOWN;
             case VK_RIGHT -> dir = Dir.RIGHT;
             case VK_LEFT -> dir = Dir.LEFT;
+            default -> dir = Dir.IDEAL;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+//        switch (e.getKeyCode()) {
+//            case VK_UP -> dir = Dir.UP;
+//            case VK_DOWN -> dir = Dir.DOWN;
+//            case VK_RIGHT -> dir = Dir.RIGHT;
+//            case VK_LEFT -> dir = Dir.LEFT;
+//        }
     }
 }
