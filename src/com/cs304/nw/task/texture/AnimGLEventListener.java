@@ -4,11 +4,15 @@ package com.cs304.nw.task.texture;
 import com.cs304.old.lab9.AnimListener;
 import com.cs304.old.lab9.Texture.TextureReader;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import javax.media.opengl.*;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 import javax.media.opengl.glu.GLU;
 
 import static java.awt.event.KeyEvent.*;
@@ -26,18 +30,23 @@ enum Dir {
     DOWN_LEFT
 }
 
-public class AnimGLEventListener extends AnimListener {
+public class AnimGLEventListener extends AnimListener implements Constants {
 
-    //    Dir dir = Dir.UP;
-    int angel;
+    Dir dir = Dir.UP;
+    int angel = ANG_UP;
 
-    int animationIndex = 0;
+    boolean isFire;
+    HashMap<Point, Dir> map = new HashMap<>();
+
+
+    int animationIndex;
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
+    int xf = maxWidth / 2, yf = maxHeight / 2;
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String[] textureNames = {"Man1.png", "Man2.png", "Man3.png", "Man4.png", "Back.png"};
+    String[] textureNames = {"Man1.png", "Man2.png", "Man3.png", "Man4.png", "Back.png", "B1.png"};
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
 
@@ -83,11 +92,107 @@ public class AnimGLEventListener extends AnimListener {
 
         DrawBackground(gl);
         handleKeyPress();
-        animationIndex = animationIndex % 4;
+        animationIndex %= 4;
 
-        DrawSprite(gl, x, y, animationIndex, 1F);
-//        System.out.println(dir);
-//        System.out.println(yD + " " + xD + " -> " + angel);
+        DrawSprite(gl, x, y, animationIndex, 1);
+
+        map.forEach((point, dir1) -> {
+            switch (dir1) {
+                case UP -> {
+                    DrawSprite(gl, point.x, point.y += 1, 5, 0.25f);
+                }
+                case DOWN -> {
+                    DrawSprite(gl, point.x, point.y -= 1, 5, 0.25f);
+
+                }
+                case RIGHT -> {
+                    DrawSprite(gl, point.x += 1, point.y, 5, 0.25f);
+
+                }
+                case LEFT -> {
+                    DrawSprite(gl, point.x -= 1, point.y, 5, 0.25f);
+
+                }
+                case UP_RIGHT -> {
+                    DrawSprite(gl, point.x += 1, point.y += 1, 5, 0.25f);
+
+                }
+                case UP_LEFT -> {
+                    DrawSprite(gl, point.x -= 1, point.y += 1, 5, 0.25f);
+
+                }
+                case DOWN_RIGHT -> {
+                    DrawSprite(gl, point.x += 1, point.y -= 1, 5, 0.25f);
+
+                }
+                case DOWN_LEFT -> {
+                    DrawSprite(gl, point.x -= 1, point.y -= 1, 5, 0.25f);
+
+                }
+            }
+            if (abs(point.x) > 100 || abs(point.y) > 100) {
+                //Remove from map
+                map.remove(point);
+                System.out.println(point);
+            }
+        });
+
+        System.out.println(map);
+    }
+
+
+    /**
+     * keyListener
+     */
+    public void handleKeyPress() {
+
+        if (isKeyPressed(VK_LEFT))
+            if (x > 0) x--;
+
+        if (isKeyPressed(VK_RIGHT))
+            if (x < maxWidth - 10) x++;
+
+        if (isKeyPressed(VK_DOWN))
+            if (y > 0) y--;
+
+        if (isKeyPressed(VK_UP))
+            if (y < maxHeight - 10) y++;
+
+        //Directions
+        if (isKeyPressed(VK_RIGHT) && isKeyPressed(VK_UP)) {
+            angel = ANG_UP_RIGHT;
+            dir = Dir.UP_RIGHT;
+        } else if (isKeyPressed(VK_LEFT) && isKeyPressed(VK_UP)) {
+            angel = ANG_UP_LEFT;
+            dir = Dir.UP_LEFT;
+        } else if (isKeyPressed(VK_LEFT) && isKeyPressed(VK_DOWN)) {
+            angel = ANG_DOWN_LEFT;
+            dir = Dir.DOWN_LEFT;
+        } else if (isKeyPressed(VK_RIGHT) && isKeyPressed(VK_DOWN)) {
+            angel = ANG_DOWN_RIGHT;
+            dir = Dir.DOWN_RIGHT;
+        } else if (isKeyPressed(VK_UP)) {
+            angel = ANG_UP;
+            dir = Dir.UP;
+        } else if (isKeyPressed(VK_RIGHT)) {
+            angel = ANG_RIGHT;
+            dir = Dir.RIGHT;
+        } else if (isKeyPressed(VK_LEFT)) {
+            angel = ANG_LEFT;
+            dir = Dir.LEFT;
+        } else if (isKeyPressed(VK_DOWN)) {
+            angel = ANG_DOWN;
+            dir = Dir.DOWN;
+        }
+
+        //Fire
+        isFire = isKeyPressed(VK_SPACE);
+        if (isFire) {
+            map.put(new Point(x, y), dir);
+
+        }
+
+
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -107,6 +212,7 @@ public class AnimGLEventListener extends AnimListener {
         gl.glRotatef(angel, 0, 0, 1); //Dir
         //System.out.println(x +" " + y);
         gl.glBegin(GL.GL_QUADS);
+
         // Front Face
         gl.glTexCoord2f(0.0f, 0.0f);
         gl.glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -143,43 +249,6 @@ public class AnimGLEventListener extends AnimListener {
         gl.glDisable(GL.GL_BLEND);
     }
 
-    /*
-     * KeyListener
-     */
-
-    public void handleKeyPress() {
-
-        if (isKeyPressed(VK_LEFT)) {
-            if (x > 0) {
-                x--;
-            }
-        }
-        if (isKeyPressed(VK_RIGHT)) {
-            if (x < maxWidth - 10) {
-                x++;
-            }
-        }
-        if (isKeyPressed(VK_DOWN)) {
-            if (y > 0) {
-                y--;
-            }
-        }
-        if (isKeyPressed(VK_UP)) {
-            if (y < maxHeight - 10) {
-                y++;
-            }
-        }
-
-        //Directions
-        if (isKeyPressed(VK_RIGHT) && isKeyPressed(VK_UP)) angel = 270 + 45;
-        else if (isKeyPressed(VK_LEFT) && isKeyPressed(VK_UP)) angel = 45;
-        else if (isKeyPressed(VK_LEFT) && isKeyPressed(VK_DOWN)) angel = 90 + 45;
-        else if (isKeyPressed(VK_RIGHT) && isKeyPressed(VK_DOWN)) angel = 180 + 45;
-        else if (isKeyPressed(VK_UP)) angel = 0;
-        else if (isKeyPressed(VK_RIGHT)) angel = 270;
-        else if (isKeyPressed(VK_LEFT)) angel = 90;
-        else if (isKeyPressed(VK_DOWN)) angel = 180;
-    }
 
     public BitSet keyBits = new BitSet(256);
 
@@ -204,4 +273,17 @@ public class AnimGLEventListener extends AnimListener {
     public boolean isKeyPressed(final int keyCode) {
         return keyBits.get(keyCode);
     }
+}
+
+interface Constants {
+
+    int ANG_UP_RIGHT = 315;
+    int ANG_UP_LEFT = 45;
+    int ANG_DOWN_LEFT = 135;
+    int ANG_DOWN_RIGHT = 225;
+    int ANG_UP = 0;
+    int ANG_DOWN = 180;
+    int ANG_LEFT = 90;
+    int ANG_RIGHT = 270;
+
 }

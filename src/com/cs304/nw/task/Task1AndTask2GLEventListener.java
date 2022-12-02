@@ -42,26 +42,15 @@ public class Task1AndTask2GLEventListener implements GLEventListener {
         }
 
 
-        drawRegularRibs(gl,
-                100,
-                new Color(120, 232, 255),
-                5,
-                -366+90);
+        drawRegularRibs(gl, 100, new Color(120, 232, 255), 5, -366+90);
         gl.glPopMatrix();
 
         gl.glPushMatrix();
         if(yPos+ stepPos > 350 || yPos- stepPos < -350) flg=!flg;
         if(flg) yPos-= stepPos; else yPos+= stepPos;
         gl.glTranslated(0, yPos % 350,0);
-        drawRegularRibs(gl,
-                100,
-                new Color(229, 43, 189),
-                360,
-                0);
-        drawStar(gl,
-                100,
-                new Color(183, 212, 225),
-                0);
+        drawRegularRibs(gl, 100, new Color(229, 43, 189), 360, 0);
+        drawStar(gl, 100, new Color(183, 212, 225), 0);
         gl.glPopMatrix();
 
 
@@ -69,13 +58,7 @@ public class Task1AndTask2GLEventListener implements GLEventListener {
         angel+=stepAngel;
 //        gl.glRotated(angel, 0,0,1);
 //        gl.glTranslated(0,0,0);
-        drawFreeStar(gl,
-                100,
-                40,
-                new Color(255, 35, 7),
-                366-90,
-                0,
-                angel);
+        drawFreeStar(gl, 100, 40, new Color(255, 35, 7), 366-90, 0, angel);
 
 
     }

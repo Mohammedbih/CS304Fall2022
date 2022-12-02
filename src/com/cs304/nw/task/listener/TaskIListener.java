@@ -182,11 +182,5 @@ public class TaskIListener implements GLEventListener, KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-//        switch (e.getKeyCode()) {
-//            case VK_UP -> dir = Dir.UP;
-//            case VK_DOWN -> dir = Dir.DOWN;
-//            case VK_RIGHT -> dir = Dir.RIGHT;
-//            case VK_LEFT -> dir = Dir.LEFT;
-//        }
     }
 }

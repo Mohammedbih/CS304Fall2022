@@ -30,7 +30,7 @@ public class TaskIIListener implements GLEventListener, MouseListener {
     public void display(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
 
-//        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 
         double x, y;
         for (int i = 0; i < points.size(); i++) {

@@ -16,7 +16,7 @@ public class SimpleFaceGLListener implements GLEventListener {
     private boolean xIncrease = true, yIncrease = true;
 
     private double theta = 30;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     private final static int BOUND = 500;
 
