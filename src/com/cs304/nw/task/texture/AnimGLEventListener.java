@@ -43,7 +43,6 @@ public class AnimGLEventListener extends AnimListener implements Constants {
     int maxWidth = 100;
     int maxHeight = 100;
     int x = maxWidth / 2, y = maxHeight / 2;
-    int xf = maxWidth / 2, yf = maxHeight / 2;
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
     String[] textureNames = {"Man1.png", "Man2.png", "Man3.png", "Man4.png", "Back.png", "B1.png"};
