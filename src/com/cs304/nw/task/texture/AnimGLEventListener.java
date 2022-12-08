@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import javax.media.opengl.*;
 
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -35,8 +36,9 @@ public class AnimGLEventListener extends AnimListener implements Constants {
     Dir dir = Dir.UP;
     int angel = ANG_UP;
 
-    boolean isFire;
     HashMap<Point, Dir> map = new HashMap<>();
+    ArrayList<Point> helper = new ArrayList<>();
+
 
 
     int animationIndex;
@@ -45,7 +47,7 @@ public class AnimGLEventListener extends AnimListener implements Constants {
     int x = maxWidth / 2, y = maxHeight / 2;
 
     // Download enemy textures from https://craftpix.net/freebies/free-monster-2d-game-items/
-    String[] textureNames = {"Man1.png", "Man2.png", "Man3.png", "Man4.png", "Back.png", "B1.png"};
+    String[] textureNames = {"Man1.png", "Man2.png", "Man3.png", "Man4.png", "Back.png", "Balloon1.png"};
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     int[] textures = new int[textureNames.length];
 
@@ -98,45 +100,47 @@ public class AnimGLEventListener extends AnimListener implements Constants {
         map.forEach((point, dir1) -> {
             switch (dir1) {
                 case UP -> {
-                    DrawSprite(gl, point.x, point.y += 1, 5, 0.25f);
+                    DrawSprite(gl, point.x, point.y += 3, 5, 0.25f);
                 }
                 case DOWN -> {
-                    DrawSprite(gl, point.x, point.y -= 1, 5, 0.25f);
+                    DrawSprite(gl, point.x, point.y -= 3, 5, 0.25f);
 
                 }
                 case RIGHT -> {
-                    DrawSprite(gl, point.x += 1, point.y, 5, 0.25f);
+                    DrawSprite(gl, point.x += 3, point.y, 5, 0.25f);
 
                 }
                 case LEFT -> {
-                    DrawSprite(gl, point.x -= 1, point.y, 5, 0.25f);
+                    DrawSprite(gl, point.x -= 3, point.y, 5, 0.25f);
 
                 }
                 case UP_RIGHT -> {
-                    DrawSprite(gl, point.x += 1, point.y += 1, 5, 0.25f);
+                    DrawSprite(gl, point.x += 3, point.y += 3, 5, 0.25f);
 
                 }
                 case UP_LEFT -> {
-                    DrawSprite(gl, point.x -= 1, point.y += 1, 5, 0.25f);
+                    DrawSprite(gl, point.x -= 3, point.y += 3, 5, 0.25f);
 
                 }
                 case DOWN_RIGHT -> {
-                    DrawSprite(gl, point.x += 1, point.y -= 1, 5, 0.25f);
+                    DrawSprite(gl, point.x += 3, point.y -= 3, 5, 0.25f);
 
                 }
                 case DOWN_LEFT -> {
-                    DrawSprite(gl, point.x -= 1, point.y -= 1, 5, 0.25f);
+                    DrawSprite(gl, point.x -= 3, point.y -= 3, 5, 0.25f);
 
                 }
             }
             if (abs(point.x) > 100 || abs(point.y) > 100) {
                 //Remove from map
-                map.remove(point);
-                System.out.println(point);
+               helper.add(point);
             }
         });
 
-        System.out.println(map);
+        for (int i = 0; i < helper.size(); i++) {
+            System.out.println(map.remove(helper.get(0)));
+        }
+        System.out.println(map.size());
     }
 
 
@@ -146,49 +150,64 @@ public class AnimGLEventListener extends AnimListener implements Constants {
     public void handleKeyPress() {
 
         if (isKeyPressed(VK_LEFT))
+        {
             if (x > 0) x--;
+        }
+
 
         if (isKeyPressed(VK_RIGHT))
+        {
             if (x < maxWidth - 10) x++;
+        }
 
         if (isKeyPressed(VK_DOWN))
+        {
             if (y > 0) y--;
+        }
 
         if (isKeyPressed(VK_UP))
+        {
             if (y < maxHeight - 10) y++;
+        }
 
         //Directions
         if (isKeyPressed(VK_RIGHT) && isKeyPressed(VK_UP)) {
             angel = ANG_UP_RIGHT;
             dir = Dir.UP_RIGHT;
+            animationIndex++;
         } else if (isKeyPressed(VK_LEFT) && isKeyPressed(VK_UP)) {
             angel = ANG_UP_LEFT;
             dir = Dir.UP_LEFT;
+            animationIndex++;
         } else if (isKeyPressed(VK_LEFT) && isKeyPressed(VK_DOWN)) {
             angel = ANG_DOWN_LEFT;
             dir = Dir.DOWN_LEFT;
+            animationIndex++;
         } else if (isKeyPressed(VK_RIGHT) && isKeyPressed(VK_DOWN)) {
             angel = ANG_DOWN_RIGHT;
             dir = Dir.DOWN_RIGHT;
+            animationIndex++;
         } else if (isKeyPressed(VK_UP)) {
             angel = ANG_UP;
             dir = Dir.UP;
+            animationIndex++;
         } else if (isKeyPressed(VK_RIGHT)) {
             angel = ANG_RIGHT;
             dir = Dir.RIGHT;
+            animationIndex++;
         } else if (isKeyPressed(VK_LEFT)) {
             angel = ANG_LEFT;
             dir = Dir.LEFT;
+            animationIndex++;
         } else if (isKeyPressed(VK_DOWN)) {
             angel = ANG_DOWN;
             dir = Dir.DOWN;
+            animationIndex++;
         }
 
         //Fire
-        isFire = isKeyPressed(VK_SPACE);
-        if (isFire) {
+        if (isKeyPressed(VK_SPACE)) {
             map.put(new Point(x, y), dir);
-
         }
 
 
@@ -255,7 +274,6 @@ public class AnimGLEventListener extends AnimListener implements Constants {
     public void keyPressed(final KeyEvent event) {
         int keyCode = event.getKeyCode();
         keyBits.set(keyCode);
-        animationIndex++;
     }
 
     @Override
